@@ -33,6 +33,7 @@ dat.fij <- dat.all[.fij, ] #Create a data frame for only the Fiji Island group
 dat.comb <- dat.all[.comb, ] #Create a data frame that combines our Island Groups
 
 #Create site-by-site data frames
+#.soc
 dat.soc.red <- dat.soc[ ,c("species","island")] # create a data frame for .soc with just species and island columns
 dat.soc.red$presence <- 1                      # create another column for presence and fill it with 1's
 dat.soc.pa <- dat.soc.red %>%                  # start building a presence/absence table (islands as rows, species as columns)
@@ -100,3 +101,97 @@ names(list0) <- names(dat.comb.pa)
 dat.comb.pa <- as.data.frame(dat.comb.pa %>% replace_na(list0))
 row.names(dat.comb.pa) <- dat.comb.pa$island
 dat.comb.pa <- dat.comb.pa[ , -1]
+
+####Richness Patterns####
+#.soc
+alpha.soc <- rowSums(dat.soc.pa) #alpha diversity of each island
+mean.alpha.soc <- mean(alpha.soc) #alpha diversity of the island group
+gamma.soc <-ncol(dat.soc.pa) #gamma diversity of the island group
+
+#.mar
+alpha.mar <- rowSums(dat.mar.pa)
+mean.alpha.mar <- mean(alpha.mar)
+gamma.mar <-ncol(dat.mar.pa)
+
+#.haw
+alpha.haw <- rowSums(dat.haw.pa)
+mean.alpha.haw <- mean(alpha.haw)
+gamma.haw <-ncol(dat.haw.pa)
+
+#.sam
+alpha.sam <- rowSums(dat.sam.pa)
+mean.alpha.sam <- mean(alpha.sam)
+gamma.sam <-ncol(dat.sam.pa)
+
+#.fij
+alpha.fij <- rowSums(dat.fij.pa)
+mean.alpha.fij <- mean(alpha.fij)
+gamma.fij <-ncol(dat.fij.pa)
+
+#.comb
+alpha.comb <- rowSums(dat.comb.pa)
+mean.alpha.comb <- mean(alpha.comb)
+gamma.comb <-ncol(dat.comb.pa)
+
+#####Compare Diversity#####
+mean.alpha.soc
+mean.alpha.mar
+mean.alpha.haw
+mean.alpha.sam
+mean.alpha.fij
+#Hawaii has by far the largest alpha diversity
+
+gamma.soc
+gamma.mar
+gamma.haw
+gamma.sam
+gamma.fij
+#Hawaii has, by far the largest gamma diversity
+
+####Species Accumulation Curves####
+
+#####Chao2 Estimator SAC#####
+pool.soc <- poolaccum(dat.soc.pa)
+chao.soc <- mean(pool.soc$chao[,100])
+chao.soc
+
+pool.mar <- poolaccum(dat.mar.pa)
+chao.mar <- mean(pool.mar$chao[,100])
+chao.mar
+
+pool.haw <- poolaccum(dat.haw.pa)
+chao.haw <- mean(pool.haw$chao[,100])
+chao.haw
+
+pool.sam <- poolaccum(dat.sam.pa)
+chao.sam <- mean(pool.sam$chao[,100])
+chao.sam
+
+pool.fij <- poolaccum(dat.fij.pa)
+chao.fij <- mean(pool.fij$chao[,100])
+chao.fij
+
+pool.comb <- poolaccum(dat.comb.pa)
+chao.comb <- mean(pool.comb$chao[,100])
+chao.comb
+
+#####SAC
+par(mfrow= c(3,2))
+plot(specaccum(dat.soc.pa), main= "Society SAC")
+abline(h=chao.soc, lty=2, col="red")
+
+plot(specaccum(dat.mar.pa), main= "Marquesa SAC")
+abline(h=chao.mar, lty=2, col="red")
+
+plot(specaccum(dat.haw.pa), main= "Hawaii SAC")
+abline(h=chao.haw, lty=2, col="red")
+
+plot(specaccum(dat.sam.pa), main= "Samoa SAC")
+abline(h=chao.sam, lty=2, col="red")
+
+plot(specaccum(dat.fij.pa), main= "Fiji SAC")
+abline(h=chao.fij, lty=2, col="red")
+
+plot(specaccum(dat.comb.pa), main= "Combined SAC")
+abline(h=chao.comb, lty=2, col="red")
+  
